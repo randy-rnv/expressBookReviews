@@ -3,6 +3,7 @@ let books = require("./booksdb.js");
 let isValid = require("./auth_users.js").isValid;
 let users = require("./auth_users.js").users;
 const public_users = express.Router();
+const axios = require('axios').default;
 
 const doesExist = (username) => {
     return users.filter(user => user.username === username).length > 0;
@@ -57,5 +58,47 @@ public_users.get('/review/:isbn',function (req, res) {
 
     return res.status(200).json(review);
 });
+
+//  TEST
+public_users.get('/test',function (req, res) {
+    getAllBooks();
+    getBookFromIsbn(3);
+    getBookFromAuthor('Samuel Beckett');
+    getBookFromTitle('The Divine Comedy');
+
+    return res.status(200).json({message: 'ok'});
+});
+
+const getAllBooks = () => {
+    axios.get('http://localhost:5000').then(response => {
+        console.log(response.data);
+    }).catch(err => {
+        console.log(err.toString())
+    });
+}
+
+const getBookFromIsbn = (isbn) => {
+    axios.get(`http://localhost:5000/isbn/${isbn}`).then(response => {
+        console.log(response.data);
+    }).catch(err => {
+        console.log(err.toString())
+    });
+}
+
+const getBookFromAuthor = (author) => {
+    axios.get(`http://localhost:5000/author/${author}`).then(response => {
+        console.log(response.data);
+    }).catch(err => {
+        console.log(err.toString())
+    });
+}
+
+const getBookFromTitle = (title) => {
+    axios.get(`http://localhost:5000/title/${title}`).then(response => {
+        console.log(response.data);
+    }).catch(err => {
+        console.log(err.toString())
+    });
+}
 
 module.exports.general = public_users;
